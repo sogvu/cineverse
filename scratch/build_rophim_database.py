@@ -6,7 +6,6 @@ import random
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-# 20 verified working popular movie slugs
 slugs = [
     "ke-trom-mat-trang-4",
     "cuu-long-thanh-trai-vay-thanh",
@@ -34,7 +33,72 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 }
 
+# Strict TS mappings
+VALID_GENRES = {
+    'Hành động', 'Tình cảm', 'Hài hước', 'Kinh dị', 'Khoa học viễn tưởng', 
+    'Hoạt hình', 'Phiêu lưu', 'Tâm lý', 'Tội phạm', 'Chiến tranh', 
+    'Thể thao', 'Lịch sử', 'Âm nhạc', 'Gia đình'
+}
+
+GENRE_MAP = {
+    "hành động": "Hành động",
+    "hài hước": "Hài hước",
+    "hài": "Hài hước",
+    "tình cảm": "Tình cảm",
+    "cổ trang": "Tình cảm",
+    "chính kịch": "Tình cảm",
+    "khoa học": "Khoa học viễn tưởng",
+    "viễn tưởng": "Khoa học viễn tưởng",
+    "kinh dị": "Kinh dị",
+    "phiêu lưu": "Phiêu lưu",
+    "tâm lý": "Tâm lý",
+    "hình sự": "Tội phạm",
+    "tội phạm": "Tội phạm",
+    "chiến tranh": "Chiến tranh",
+    "hoạt hình": "Hoạt hình",
+    "gia đình": "Gia đình",
+    "thể thao": "Thể thao",
+    "lịch sử": "Lịch sử",
+    "âm nhạc": "Âm nhạc"
+}
+
+VALID_COUNTRIES = {'Mỹ', 'Hàn Quốc', 'Nhật Bản', 'Trung Quốc', 'Anh', 'Pháp', 'Thái Lan', 'Việt Nam', 'Khác'}
+
+COUNTRY_MAP = {
+    "mỹ": "Mỹ",
+    "âu mỹ": "Mỹ",
+    "hàn quốc": "Hàn Quốc",
+    "nhật bản": "Nhật Bản",
+    "trung quốc": "Trung Quốc",
+    "anh": "Anh",
+    "pháp": "Pháp",
+    "thái lan": "Thái Lan",
+    "việt nam": "Việt Nam",
+    "hồng kông": "Khác",
+    "đài loan": "Khác",
+    "quốc gia khác": "Khác"
+}
+
 movie_objects = []
+
+def map_genre(g_name):
+    g_lower = g_name.lower()
+    if g_lower in GENRE_MAP:
+        return GENRE_MAP[g_lower]
+    # Check substring match
+    for k, v in GENRE_MAP.items():
+        if k in g_lower:
+            return v
+    return None
+
+def map_country(c_name):
+    c_lower = c_name.lower()
+    if c_lower in COUNTRY_MAP:
+        return COUNTRY_MAP[c_lower]
+    for k, v in COUNTRY_MAP.items():
+        if k in c_lower:
+            return v
+    return "Khác"
 
 def clean_html(raw_html):
     if not raw_html:
@@ -78,16 +142,20 @@ for idx, slug in enumerate(slugs):
                 except ValueError:
                     total_ep = 12 if m_type == "series" else 1
                 
-                # Genres
-                genres = [g.get("name") for g in m.get("category", [])]
-                if not genres:
-                    genres = ["Hành động"]
+                # Genres mapping
+                genres_mapped = []
+                for g in m.get("category", []):
+                    mapped = map_genre(g.get("name", ""))
+                    if mapped and mapped not in genres_mapped:
+                        genres_mapped.append(mapped)
+                if not genres_mapped:
+                    genres_mapped = ["Hành động"]
                 
-                # Country
-                country = "Mỹ"
+                # Country mapping
+                country_name = "Mỹ"
                 countries = m.get("country", [])
                 if countries:
-                    country = countries[0].get("name", "Mỹ")
+                    country_name = map_country(countries[0].get("name", ""))
                 
                 # Ratings
                 imdb = round(random.uniform(7.0, 9.2), 1)
@@ -108,8 +176,8 @@ for idx, slug in enumerate(slugs):
                     "trailer": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", # default trailer
                     "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                     "description": clean_html(m.get("content", "")).replace("'", "\\'"),
-                    "genres": genres,
-                    "country": country,
+                    "genres": genres_mapped,
+                    "country": country_name,
                     "year": int(m.get("year", 2024)),
                     "duration": parse_duration(m.get("time", "")),
                     "director": (m.get("director", [""])[0] if m.get("director") else "Đang cập nhật").replace("'", "\\'"),
@@ -120,7 +188,7 @@ for idx, slug in enumerate(slugs):
                     "totalViews": total_views,
                     "quality": ["1080p", "720p"],
                     "subtitles": ["Vietsub"],
-                    "tags": genres + [country],
+                    "tags": genres_mapped + [country_name],
                     "isFeatured": True if idx < 5 else False,
                     "isHot": True if idx < 10 else False,
                     "isNew": True if idx >= 15 else False,
@@ -133,7 +201,7 @@ for idx, slug in enumerate(slugs):
                     movie_obj["currentEpisode"] = total_ep
                 
                 movie_objects.append(movie_obj)
-                print(f"  -> Added: {movie_obj['title']}")
+                print(f"  -> Added: {movie_obj['title']} (Genres: {genres_mapped}, Country: {country_name})")
     except Exception as e:
         print(f"  -> Error: {e}")
     print()
@@ -184,11 +252,27 @@ export function getNewMovies(): Movie[] {
   return mockMovies.filter(m => m.isNew);
 }
 
+export function getSeriesMovies(): Movie[] {
+  return mockMovies.filter(m => m.type === 'series');
+}
+
+export function getSingleMovies(): Movie[] {
+  return mockMovies.filter(m => m.type === 'movie');
+}
+
+export function getAnimationMovies(): Movie[] {
+  return mockMovies.filter(m => m.genres.includes('Hoạt hình'));
+}
+
+export function getKoreanMovies(): Movie[] {
+  return mockMovies.filter(m => m.country === 'Hàn Quốc');
+}
+
 export function searchMovies(query: string): Movie[] {
   const q = query.toLowerCase();
   return mockMovies.filter(m => 
     m.title.toLowerCase().includes(q) || 
-    m.originalTitle.toLowerCase().includes(q) ||
+    (m.originalTitle?.toLowerCase() || '').includes(q) ||
     m.genres.some(g => g.toLowerCase().includes(q))
   );
 }

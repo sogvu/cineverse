@@ -73,7 +73,7 @@ npm install
 # Khởi chạy máy chủ phát triển
 npm run dev
 ```
-Mở trình duyệt truy cập: [http://localhost:3000](http://localhost:3000)
+Mở trình duyệt truy cập: [http://localhost:3000]((https://cineverse-songvu.vercel.app/))
 
 ### 2. Cập nhật Cơ sở dữ liệu Phim mới
 Yêu cầu máy tính cài đặt sẵn [Python 3](https://www.python.org/).

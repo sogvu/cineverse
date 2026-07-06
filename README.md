@@ -1,58 +1,110 @@
-## 📝 Giới thiệu Dự án
+# 🎬 Cineverse - Ứng Dụng Khám Phá & Xem Phim Trực Tuyến
 
-**Cineverse** là một ứng dụng web toàn diện dành cho những tín đồ điện ảnh để tìm kiếm, khám phá và quản lý thế giới phim ảnh của riêng mình. Hệ thống tích hợp các API dữ liệu lớn, mang lại trải nghiệm mượt mà từ việc xem trailer, đánh giá phim đến việc cá nhân hóa danh sách theo dõi. 
-
-Dự án được xây dựng với tư duy thiết kế hệ thống tối ưu, phân tách rõ ràng trách nhiệm giữa hai phần Client và Server nhằm đảm bảo khả năng mở rộng, tính bảo mật cao và hiệu năng vận hành ổn định.
-
-> 🚀 **Mục tiêu kỹ thuật:** Áp dụng các kiến trúc chuẩn công nghiệp như Clean Architecture hoặc Repository Pattern, tối ưu hóa truy vấn SQL Server, mang lại trải nghiệm UI/UX mượt mà trên mọi thiết bị với Dark Mode thời thượng.
+**Cineverse** là một ứng dụng web khám phá và xem phim trực tuyến hiện đại, trực quan và đầy tương tác. Dự án được xây dựng hoàn chỉnh trên nền tảng Frontend-only kết hợp với dữ liệu cào trực tiếp từ API nguồn mở (OPhim/RoPhim), mang lại trải nghiệm xem phim chất lượng cao miễn phí với giao diện cao cấp.
 
 ---
 
-## 📌 Các Tính năng Nổi bật
+## ✨ Điểm Nổi Bật Dự Án (Features)
 
-### 👤 Dành cho Người dùng (Client-Side)
-* **Xác thực & Bảo mật:** Đăng ký, đăng nhập hệ thống an toàn bằng cơ chế mã hóa mật khẩu và cấp phát mã token định danh (JWT).
-* **Khám phá Điện ảnh:** Liên tục cập nhật các danh sách phim xu hướng (Trending), phim sắp chiếu (Upcoming) và phim được đánh giá cao nhờ đồng bộ hóa dữ liệu thông minh.
-* **Bộ lọc và Tìm kiếm Thông minh:** Hỗ trợ tìm kiếm theo từ khóa, thể loại, năm phát hành, sắp xếp theo điểm đánh giá. Áp dụng kỹ thuật *Debouncing* ở Frontend để giảm tải số lượng truy vấn đến API Server.
-* **Watchlist cá nhân:** Cho phép người dùng thêm các bộ phim yêu thích vào không gian lưu trữ riêng để theo dõi lại sau.
-* **Hệ thống Đánh giá (Review System):** Người dùng có thể chấm điểm tương tác (Rating) và để lại bình luận chuyên sâu dưới mỗi bài viết phim.
-
-### 👑 Dành cho Quản trị viên (Admin Dashboard)
-* **Quản lý Tài nguyên (CRUD):** Giao diện quản trị mạnh mẽ giúp thêm, sửa, xóa danh sách phim, danh mục thể loại, thông tin diễn viên, đạo diễn.
-* **Kiểm duyệt nội dung:** Quản lý bình luận của người dùng nhằm xây dựng một cộng đồng văn minh.
-* **Thống kê Tổng quan:** Cung cấp số liệu trực quan về lượng người dùng mới, phim hot nhất trong tháng và biểu đồ xu hướng thể loại được quan tâm.
+- **Giao diện Cao Cấp & Trực Quan**: Áp dụng phong cách Glassmorphism hiện đại, hiệu ứng ánh sáng Neon và chuyển cảnh mượt mà.
+- **Trải nghiệm 3D sống động**: Tích hợp các hạt bụi 3D chuyển động trong không gian bằng Three.js (`@react-three/fiber`).
+- **Nhân vật Chibi tương tác**: Các nhân vật Chibi dễ thương tự động di chuyển, ngủ, chào hỏi và nói chuyện ngẫu nhiên với người dùng dựa trên mức cấu hình thiết bị.
+- **Xem phim Đa nguồn (Multi-server)**: Phát trực tiếp phim qua link nhúng của server RoPhim (mặc định) hoặc chạy backup video trực tiếp qua hệ thống Cineverse.
+- **Bộ lọc & Tìm kiếm mạnh mẽ**: Cho phép lọc phim theo thể loại, quốc gia, năm sản xuất, điểm đánh giá và sắp xếp linh hoạt.
+- **Lưu lịch sử & Watchlist**: Quản lý lịch sử xem phim (lưu tiến trình giây xem hiện tại) và lưu danh sách yêu thích cá nhân thông qua Zustand LocalStorage persistence.
 
 ---
 
-## 🛠️ Công nghệ Sử dụng (Tech Stack)
+## 🛠️ Công Nghệ Sử Dụng (Tech Stack)
 
-### 🖥️ Backend (Core Engine)
-* **Framework:** ASP.NET Core Web API (.NET 8.0)
-* **Database Access:** Entity Framework Core (Code-First Approach)
-* **Database:** Microsoft SQL Server (Tối ưu hóa các bảng, chỉ mục và ràng buộc dữ liệu)
-* **Security:** JSON Web Tokens (JWT) & ASP.NET Core Identity để phân quyền chi tiết (Role-based Authorization: Admin/User)
-* **Architecture:** Cấu trúc dự án theo hướng mô-đun hóa cao, dễ viết Unit Test và bảo trì lâu dài.
-
-### 🎨 Frontend (User Interface)
-* **Framework:** React.js / Vite hoặc Next.js (TypeScript)
-* **State Management:** Redux Toolkit hoặc Context API để đồng bộ dữ liệu toàn cục.
-* **Styling:** Tailwind CSS & các UI components hiện đại (Shadcn/ui hoặc Ant Design), hỗ trợ giao diện Responsive hoàn hảo trên Mobile, Tablet và Desktop.
+- **Framework**: Next.js 16 (App Router) & React 19 (TypeScript nghiêm ngặt).
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/postcss`) & Custom CSS Modules.
+- **Hiệu ứng & 3D**:
+  - 3D Rendering: `three`, `@react-three/fiber`, `@react-three/drei`
+  - Motion: `framer-motion` (animations UI), `lottie-react` (các hiệu ứng Lottie)
+- **State Management**: `zustand` (quản lý state Watchlist, History, UI theme và Movie Filter).
+- **Sliders & Carousel**: `swiper` (hiển thị danh sách phim dạng trượt).
 
 ---
 
-## 📂 Cấu trúc Thư mục Dự án
+## 📁 Cấu Trúc Thư Mục (Project Structure)
 
 ```text
 cineverse/
-├── Cineverse.Backend/                 # Mã nguồn xử lý Backend (ASP.NET Core)
-│   ├── Cineverse.Domain/              # Định nghĩa các thực thể (Entities) và Interfaces cốt lõi
-│   ├── Cineverse.Application/         # Logic xử lý nghiệp vụ, DTOs, CQRS/Services
-│   ├── Cineverse.Infrastructure/      # Kết nối Database (DbContext), Repositories, Migrations
-│   └── Cineverse.API/                 # Controllers tiếp nhận request, Cấu hình Middlewares & appsettings.json
-├── cineverse-frontend/                # Mã nguồn xử lý Frontend (React/Next.js)
-│   ├── src/
-│   │   ├── components/                # Các thành phần giao diện tái sử dụng (Button, Card, Modal...)
-│   │   ├── pages/                     # Các trang chức năng chính (Home, MovieDetail, Profile, Admin...)
-│   │   ├── services/                  # Xử lý các lệnh gọi API kết nối đến Server (Axios Instance)
-│   │   └── store/                     # Cấu hình quản lý luồng dữ liệu (Redux Store)
-└── README.md
+├── app/                  # Next.js App Router: Cấu trúc routes & pages chính
+│   ├── auth/             # Trang đăng nhập / đăng ký
+│   ├── category/         # Trang lọc phim theo danh mục (Phim lẻ, Phim bộ, Hoạt hình,...)
+│   ├── movie/            # Trang chi tiết phim (thông tin, đạo diễn, diễn viên, bình luận)
+│   ├── watch/            # Trang xem phim (tích hợp video player & chuyển tập phim)
+│   ├── profile/          # Trang cá nhân quản lý danh sách yêu thích & lịch sử xem
+│   ├── search/           # Trang tìm kiếm và bộ lọc nâng cao
+│   └── globals.css       # File định nghĩa biến màu css, fonts, và hiệu ứng toàn cục
+├── components/           # Các component React tái sử dụng
+│   ├── 3d/               # Các hạt chuyển động 3D (Particle Field)
+│   ├── characters/       # Logic hành vi & giao diện nhân vật Chibi tương tác
+│   ├── home/             # Khung slide đầu trang (Hero) và các hàng phim trang chủ
+│   ├── layout/           # Thanh điều hướng (Navbar) và chân trang (Footer)
+│   └── movie/            # Thẻ phim (Movie Card) và hộp thoại xem trailer
+├── data/                 # Cơ sở dữ liệu phim tĩnh
+│   └── mockMovies.ts     # Danh sách phim chính dùng cho toàn web (sinh ra từ script Python)
+├── store/                # Quản lý trạng thái toàn cục bằng Zustand
+│   ├── movieStore.ts     # Bộ lọc & Tìm kiếm phim
+│   ├── uiStore.ts        # Trạng thái giao diện (Dark/Light mode, Trailer, Player mode)
+│   └── userStore.ts      # Watchlist, lịch sử xem, thông tin đăng nhập
+├── types/                # Định nghĩa Typescript Interfaces (Movie, Genre, User,...)
+├── scratch/              # Script Python dùng để cào dữ liệu phim & thử nghiệm
+└── package.json          # Quản lý thư viện phụ thuộc và scripts chạy dự án
+```
+
+---
+
+## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy (Quick Start)
+
+### 1. Khởi chạy Web Local
+Yêu cầu máy tính cài đặt sẵn [Node.js](https://nodejs.org/).
+
+```bash
+# Di chuyển vào thư mục cineverse
+cd cineverse
+
+# Cài đặt các thư viện phụ thuộc
+npm install
+
+# Khởi chạy máy chủ phát triển
+npm run dev
+```
+Mở trình duyệt truy cập: [http://localhost:3000](http://localhost:3000)
+
+### 2. Cập nhật Cơ sở dữ liệu Phim mới
+Yêu cầu máy tính cài đặt sẵn [Python 3](https://www.python.org/).
+
+Thư mục `scratch/` chứa các kịch bản python để kéo dữ liệu mới nhất từ nguồn API về file TypeScript cục bộ của trang web:
+
+- **Cập nhật danh sách từ trang chủ RoPhim** (Lấy các phim mới và nổi bật nhất):
+  ```bash
+  cd scratch
+  python fetch_rophims_all.py
+  ```
+- **Cập nhật ngẫu nhiên 100 phim đa dạng danh mục** (Phim lẻ, Phim bộ, Hoạt hình):
+  ```bash
+  cd scratch
+  python fetch_100_movies.py
+  ```
+
+*Lưu ý: Các script sẽ tự động gọi API và chuyển đổi dữ liệu, ghi đè trực tiếp vào file `data/mockMovies.ts`.*
+
+---
+
+## ⚙️ Quy Tắc Phát Triển & Kiểm Soát (Development Rules)
+
+1. **Quản lý dữ liệu**:
+   - Dữ liệu phim luôn được lưu trữ tập trung tại [mockMovies.ts](file:///d:/Vũ/Song%20Vu%20File/Dự%20án%20Web%20Phim/cineverse/data/mockMovies.ts). Không sửa thủ công file này; hãy chạy các công cụ trong `scratch/` để tạo/cập nhật dữ liệu đồng nhất.
+   - Khi chỉnh sửa dữ liệu, hãy tuân thủ kiểu dữ liệu `Movie` định nghĩa trong [types/index.ts](file:///d:/V%C5%A9/Song%20Vu%20File/Dự%20án%20Web%20Phim/cineverse/types/index.ts).
+
+2. **Giao diện & Tương tác**:
+   - Sử dụng Tailwind CSS kết hợp với CSS Biến số trong `globals.css` để đồng bộ hệ thống màu Neon.
+   - Luôn kiểm tra tính tương thích Responsive trên thiết bị di động vì đây là ứng dụng thiên về trải nghiệm người dùng.
+   - Các nhân vật Chibi tự động ẩn đi (`isPlayerMode = true`) khi người dùng truy cập trang `/watch` để tránh gây mất tập trung khi xem phim.
+
+3. **Chạy kiểm tra**:
+   - Trước khi gửi các thay đổi, chạy lệnh `npm run lint` để kiểm tra các lỗi cú pháp TypeScript và quy tắc viết code.

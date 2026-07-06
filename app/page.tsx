@@ -1,65 +1,116 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import HeroCarousel from '@/components/home/HeroCarousel';
+import MovieRow from '@/components/home/MovieRow';
+import {
+  getFeaturedMovies, getHotMovies, getNewMovies,
+  getSeriesMovies, getSingleMovies, getAnimationMovies,
+  getKoreanMovies, mockMovies,
+} from '@/data/mockMovies';
+import { useUIStore } from '@/store/uiStore';
+import { DeviceTier } from '@/types';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.12, duration: 0.5 },
+  }),
+};
+
+export default function HomePage() {
+  const setDeviceTier = useUIStore(s => s.setDeviceTier);
+
+  // Detect device performance on mount
+  useEffect(() => {
+    const gl = document.createElement('canvas').getContext('webgl');
+    if (!gl) { setDeviceTier('low'); return; }
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : '';
+    const r = renderer.toLowerCase();
+    const tier: DeviceTier =
+      r.includes('intel') || r.includes('apple') ? 'medium' :
+      r.includes('llvm') || r.includes('swiftshader') ? 'low' : 'high';
+    setDeviceTier(tier);
+  }, [setDeviceTier]);
+
+  const rows = [
+    { title: 'Mới Cập Nhật', emoji: '✨', movies: getNewMovies(), href: '/search?filter=new' },
+    { title: 'Đang Thịnh Hành', emoji: '🔥', movies: getHotMovies(), href: '/search?filter=hot' },
+    { title: 'Phim Lẻ', emoji: '🎬', movies: getSingleMovies(), href: '/category/phim-le' },
+    { title: 'Phim Bộ', emoji: '📺', movies: getSeriesMovies(), href: '/category/phim-bo' },
+    { title: 'Phim Hoạt Hình', emoji: '🌸', movies: getAnimationMovies(), href: '/category/hoat-hinh' },
+    { title: 'Phim Hàn Quốc', emoji: '🇰🇷', movies: getKoreanMovies(), href: '/category/han-quoc' },
+    { title: 'Tất Cả Phim', emoji: '🍿', movies: mockMovies, href: '/search' },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="page-enter">
+      {/* ── Hero Carousel ── */}
+      <HeroCarousel movies={getFeaturedMovies()} />
+
+      {/* ── Stats bar ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        style={{
+          background: 'linear-gradient(90deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08), rgba(255,0,110,0.08))',
+          border: '1px solid rgba(255,255,255,0.06)',
+          borderRadius: 16,
+          padding: '20px 32px',
+          margin: '0 clamp(16px, 4vw, 80px) 48px',
+          display: 'flex',
+          justifyContent: 'space-around',
+          flexWrap: 'wrap',
+          gap: 16,
+        }}
+      >
+        {[
+          { label: 'Phim & Series', value: '10,000+', icon: '🎬' },
+          { label: 'Thành viên', value: '2.5M+', icon: '👥' },
+          { label: 'Chất lượng', value: '4K UHD', icon: '🖥️' },
+          { label: 'Lượt xem / ngày', value: '500K+', icon: '👁️' },
+        ].map(s => (
+          <div key={s.label} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: 4 }}>{s.icon}</div>
+            <div style={{
+              fontSize: 'clamp(1.1rem, 2.5vw, 1.6rem)',
+              fontWeight: 800,
+              background: 'var(--gradient-neon)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>{s.value}</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)' }}>{s.label}</div>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* ── Movie Rows ── */}
+      <div className="container-cv">
+        {rows.map((row, i) => (
+          <motion.div
+            key={row.title}
+            custom={i}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <MovieRow
+              title={row.title}
+              emoji={row.emoji}
+              movies={row.movies}
+              seeAllHref={row.href}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          </motion.div>
+        ))}
+      </div>
+
+
     </div>
   );
 }
